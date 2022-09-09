@@ -1,14 +1,11 @@
-from array import array
 import os
 import logging
-from shutil import ExecError
 
 import requests
 
 import time
 
-from telegram import Bot, ReplyKeyboardMarkup
-from telegram.ext import CommandHandler, Updater
+from telegram import Bot
 
 from dotenv import load_dotenv
 
@@ -34,6 +31,7 @@ HOMEWORK_STATUSES = {
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     level=logging.INFO)
+
 
 def send_message(bot, message):
     try:
@@ -94,20 +92,16 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-
     if check_tokens() is False:
         print('Программа принудительно остановлена.')
         return 1
-
     bot = Bot(token=t_token)
     current_timestamp = int(time.time())
-
     while True:
         try:
             response = get_api_answer(current_timestamp)
             current_timestamp = int(time.time())
             homeworks = check_response(response)
-
             for homework in homeworks:
                 homework_status = parse_status(homework)
                 send_message(bot, homework_status)
