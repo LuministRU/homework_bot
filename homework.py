@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-pr_token = os.getenv('PRACTIKUM_TOKEN')
+pr_token = os.getenv('PRACTICUM_TOKEN')
 t_token = os.getenv('TELEGRAM_TOKEN')
 chat_id = os.getenv('TELEGRAM_CHAT_ID')
 
