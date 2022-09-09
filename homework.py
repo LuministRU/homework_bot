@@ -34,6 +34,7 @@ logging.basicConfig(
 
 
 def send_message(bot, message):
+    """"Отправка сообщений"""
     try:
         bot.send_message(chat_id, message)
         logging.info(f'Бот отправил сообщение: {message}')
@@ -42,6 +43,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
+    """"Получение API"""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     status = requests.get(ENDPOINT, headers=HEADERS, params=params)
@@ -56,6 +58,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
+    """"Проверка ключей"""
     homeworks = response.get('homeworks')
     if homeworks is not None:
         return homeworks
@@ -65,6 +68,7 @@ def check_response(response):
 
 
 def parse_status(homework):
+    """Проверка статуса"""
     homework_name = homework['homework_name']
     homework_status = homework['status']
     if OLD_STATUSES.get('homework_name') == homework.get('status'):
@@ -73,7 +77,8 @@ def parse_status(homework):
         if homework_status in HOMEWORK_STATUSES:
             OLD_STATUSES[homework_name] = homework_status
             verdict = HOMEWORK_STATUSES[homework_status]
-            return (f'Изменился статус проверки работы "{homework_name}". {verdict}')
+            return (f'Изменился статус проверки работы "{homework_name}". '
+                    f'{verdict}')
         else:
             logging.error(f'недокументированный статус домашней работы, '
                           f'обнаруженный в ответе API. '
@@ -84,6 +89,7 @@ def parse_status(homework):
 
 
 def check_tokens():
+    """"Проверка токенов"""
     if pr_token != None and t_token != None and chat_id != None:
         return True
     elif pr_token is None:
