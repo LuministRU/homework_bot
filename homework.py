@@ -38,7 +38,7 @@ def send_message(bot, message):
     try:
         bot.send_message(chat_id, message)
         logging.info(f'Бот отправил сообщение: {message}')
-    except Exception as error:
+    except Exception:
         logging.error('Бот не смог отправить сообщение')
 
 
