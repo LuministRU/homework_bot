@@ -48,8 +48,11 @@ def get_api_answer(current_timestamp):
     if status.status_code == 200:
         return status.json()
     else:
-        logging.error(f'Сбой в работе программы: Эндпоинт {ENDPOINT} недоступен. Код ответа API: {status.status_code}')
-        raise Exception(f'Эндпоинт {ENDPOINT} недоступен. Код ответа API: {status.status_code}')
+        logging.error(f'Сбой в работе программы: '
+                      f'Эндпоинт {ENDPOINT} недоступен. '
+                      f'Код ответа API: {status.status_code}')
+        raise Exception(f'Эндпоинт {ENDPOINT} недоступен. '
+                        f'Код ответа API: {status.status_code}')
 
 
 def check_response(response):
@@ -72,21 +75,31 @@ def parse_status(homework):
             verdict = HOMEWORK_STATUSES[homework_status]
             return (f'Изменился статус проверки работы "{homework_name}". {verdict}')
         else:
-            logging.error(f'недокументированный статус домашней работы, обнаруженный в ответе API. Не нашел {homework_status}')
-            raise Exception(f'недокументированный статус домашней работы, обнаруженный в ответе API. Не нашел {homework_status}')
+            logging.error(f'недокументированный статус домашней работы, '
+                          f'обнаруженный в ответе API. '
+                          f'Не нашел {homework_status}')
+            raise Exception(f'недокументированный статус домашней работы, '
+                            f'обнаруженный в ответе API. '
+                            f'Не нашел {homework_status}')
 
 
 def check_tokens():
     if pr_token != None and t_token != None and chat_id != None:
         return True
     elif pr_token is None:
-        logging.critical('Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN')
+        logging.critical(
+            'Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN'
+            )
         return False
     elif t_token is None:
-        logging.critical('Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN')
+        logging.critical(
+            'Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN'
+            )
         return False
     elif chat_id is None:
-        logging.critical('Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID')
+        logging.critical(
+            'Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID'
+            )
         return False
 
 
