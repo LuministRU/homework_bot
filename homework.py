@@ -44,7 +44,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    timestamp = 0 #current_timestamp or int(time.time())
+    timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     status = requests.get(ENDPOINT, headers=HEADERS, params=params)
     if status.status_code == 200:
@@ -105,7 +105,7 @@ def main():
     while True:
         try:
             response = get_api_answer(current_timestamp)
-            current_timestamp = 0 #int(time.time())
+            current_timestamp = int(time.time())
             homeworks = check_response(response)
 
             for homework in homeworks:
