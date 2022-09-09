@@ -34,7 +34,7 @@ logging.basicConfig(
 
 
 def send_message(bot, message):
-    """"Отправка сообщений"""
+    """Отправка сообщений"""
     try:
         bot.send_message(chat_id, message)
         logging.info(f'Бот отправил сообщение: {message}')
@@ -43,7 +43,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    """"Получение API"""
+    """Получение API"""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     status = requests.get(ENDPOINT, headers=HEADERS, params=params)
@@ -58,7 +58,7 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    """"Проверка ключей"""
+    """Проверка ключей"""
     homeworks = response.get('homeworks')
     if homeworks is not None:
         return homeworks
@@ -89,23 +89,20 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """"Проверка токенов"""
-    if pr_token != None and t_token != None and chat_id != None:
+    """Проверка токенов"""
+    if pr_token is not None and t_token is not None and chat_id is not None:
         return True
     elif pr_token is None:
         logging.critical(
-            'Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN'
-            )
+            'Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN')
         return False
     elif t_token is None:
         logging.critical(
-            'Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN'
-            )
+            'Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN')
         return False
     elif chat_id is None:
         logging.critical(
-            'Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID'
-            )
+            'Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID')
         return False
 
 
