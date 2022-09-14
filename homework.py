@@ -62,7 +62,7 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверка ключей."""
-    homeworks = response('homeworks')
+    homeworks = response['homeworks']
     if homeworks is not None:
         return homeworks
     else:
