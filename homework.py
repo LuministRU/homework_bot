@@ -64,9 +64,10 @@ def check_response(response):
     """Проверка ключей."""
     homeworks = response['homeworks']
     if homeworks is not None:
-        if homeworks is not list:
+        if type(homeworks) == list:
+            return homeworks
+        else:
             raise Exception('Ключ "homeworks" приходит не в виде списка')
-        return homeworks
     else:
         logging.error('отсутствие ожидаемых ключей в ответе API')
         raise Exception('отсутствие ожидаемых ключей в ответе API')
