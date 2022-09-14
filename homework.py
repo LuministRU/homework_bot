@@ -1,4 +1,4 @@
-import os
+# import os
 import logging
 
 import requests
@@ -12,13 +12,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-pr_token = os.getenv('PRACTICUM_TOKEN')
-t_token = os.getenv('TELEGRAM_TOKEN')
-chat_id = os.getenv('TELEGRAM_CHAT_ID')
+# pr_token = os.getenv('PRACTICUM_TOKEN')
+# t_token = os.getenv('TELEGRAM_TOKEN')
+# chat_id = os.getenv('TELEGRAM_CHAT_ID')
+TELEGRAM_TOKEN = '5688636520:AAHuHyhlrFipoZAaxaDVXOlS0WisfI0L9IE'
+PRACTICUM_TOKEN = 'y0_AgAAAAABFdCZAAYckQAAAADN21f3uC-MGpbGQQKiNj6kuOaC7OKkCJs'
+TELEGRAM_CHAT_ID = 508133830
 
 RETRY_TIME = 5
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
-HEADERS = {'Authorization': f'OAuth {pr_token}'}
+HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
 
 OLD_STATUSES = {}
@@ -36,7 +39,7 @@ logging.basicConfig(
 def send_message(bot, message):
     """Отправка сообщений."""
     try:
-        bot.send_message(chat_id, message)
+        bot.send_message(TELEGRAM_CHAT_ID, message)
         logging.info(f'Бот отправил сообщение: {message}')
     except Exception:
         logging.error('Бот не смог отправить сообщение')
@@ -59,7 +62,7 @@ def get_api_answer(current_timestamp):
 
 def check_response(response):
     """Проверка ключей."""
-    homeworks = response.get('homeworks')
+    homeworks = response('homeworks')
     if homeworks is not None:
         return homeworks
     else:
@@ -90,17 +93,17 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверка токенов."""
-    if pr_token is not None and t_token is not None and chat_id is not None:
+    if PRACTICUM_TOKEN is not None and TELEGRAM_TOKEN is not None and TELEGRAM_CHAT_ID is not None:
         return True
-    elif pr_token is None:
+    elif PRACTICUM_TOKEN is None:
         logging.critical(
             'Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN')
         return False
-    elif t_token is None:
+    elif TELEGRAM_TOKEN is None:
         logging.critical(
             'Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN')
         return False
-    elif chat_id is None:
+    elif TELEGRAM_CHAT_ID is None:
         logging.critical(
             'Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID')
         return False
@@ -111,7 +114,7 @@ def main():
     if check_tokens() is False:
         print('Программа принудительно остановлена.')
         return 1
-    bot = Bot(token=t_token)
+    bot = Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
     while True:
         try:
