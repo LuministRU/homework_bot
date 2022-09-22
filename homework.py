@@ -15,7 +15,6 @@ PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-# no_token = '1'
 
 RETRY_TIME = 5
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
@@ -51,6 +50,7 @@ def get_api_answer(current_timestamp):
     if status.status_code == requests.codes.ok:
         return status.json()
     else:
+        print(status.json())
         logging.error(f'Сбой в работе программы: '
                       f'Эндпоинт {ENDPOINT} недоступен. '
                       f'Код ответа API: {status.status_code}')
@@ -91,24 +91,6 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверка токенов."""
-    # if PRACTICUM_TOKEN is not None and \
-    #    TELEGRAM_TOKEN is not None and \
-    #    TELEGRAM_CHAT_ID is not None:
-    #     return True
-    # elif PRACTICUM_TOKEN is None:   
-    #     logging.critical(
-    #         'Отсутствует обязательная переменная окружения: PRACTIKUM_TOKEN')
-    #     return False
-    # elif TELEGRAM_TOKEN is None:
-    #     logging.critical(
-    #         'Отсутствует обязательная переменная окружения: TELEGRAM_TOKEN')
-    #     return False
-    # elif TELEGRAM_CHAT_ID is None:
-    #     logging.critical(
-    #         'Отсутствует обязательная переменная окружения: TELEGRAM_CHAT_ID')
-    #     return False
-    # if PRACTICUM_TOKEN and TELEGRAM_TOKEN and TELEGRAM_CHAT_ID is not None:
-    # global no_token
     no_token = None
     if PRACTICUM_TOKEN is None:
         no_token = 'PRACTICUM_TOKEN'
@@ -129,51 +111,21 @@ def main():
         logging.error('Программа принудительно остановлена.')
         raise Exception('Программа принудительно остановлена.')
     bot = Bot(token=TELEGRAM_TOKEN)
-    # current_timestamp = int(time.time())
-    current_timestamp = 0
+    current_timestamp = 1
     while True:
         try:
             response = get_api_answer(current_timestamp)
-            current_timestamp = int(time.time())
-            # current_timestamp = response['current_date']
+            current_timestamp = response['current_date']
             homeworks = check_response(response)
             for homework in homeworks:
                 homework_status = parse_status(homework)
                 send_message(bot, homework_status)
-                # time.sleep(RETRY_TIME)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             send_message(bot, message)
-            # time.sleep(RETRY_TIME)
         finally:
             current_timestamp = int(time.time())
             time.sleep(RETRY_TIME)
-        # else:
-        #     logging.debug('Статус не изменен')
-
-    # current_timestamp = 0
-    # old_message = ''
-    # while True:
-    #     try:
-    #         response = get_api_answer(current_timestamp)
-    #         # current_timestamp = response['current_date']
-    #         homework = check_response(response)
-    #         if homework:
-    #             message = parse_status(homework)
-    #             if message !=old_message:
-    #                 send_message(bot, message)
-    #                 old_message = message
-    #             else:
-    #                 logging.info(f'Статус проверки не изменился: {message}')
-    #     except Exception as error:
-    #         message = f'Сбой в работе программы: {error}'
-    #         send_message(bot, message)
-    #     finally:
-    #         current_timestamp = int(time.time())
-    #         time.sleep(RETRY_TIME)
-    #     # else:
-    #     #     logging.debug('Статус не изменен')
-
 
 if __name__ == '__main__':
     main()
