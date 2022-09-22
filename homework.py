@@ -133,7 +133,6 @@ def main():
     current_timestamp = 0
     while True:
         try:
-            # print(1)
             response = get_api_answer(current_timestamp)
             current_timestamp = int(time.time())
             # current_timestamp = response['current_date']
@@ -146,6 +145,9 @@ def main():
             message = f'Сбой в работе программы: {error}'
             send_message(bot, message)
             # time.sleep(RETRY_TIME)
+        finally:
+            current_timestamp = int(time.time())
+            time.sleep(RETRY_TIME)
         # else:
         #     logging.debug('Статус не изменен')
 
