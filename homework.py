@@ -1,6 +1,5 @@
 import os
 import logging
-from urllib import response
 import requests
 import time
 
@@ -126,6 +125,7 @@ def main():
         finally:
             current_timestamp = int(time.time())
             time.sleep(RETRY_TIME)
+
 
 if __name__ == '__main__':
     main()
