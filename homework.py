@@ -105,7 +105,7 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-    if check_tokens() is False: # из check_tokens() возвращается False, потому что если True то нету одной из переменных
+    if check_tokens() is False:  # из check_tokens() возвращается False, потому что если True то нету одной из переменных
         logging.error('Программа принудительно остановлена.')
         raise Exception('Программа принудительно остановлена.')
     bot = Bot(token=TELEGRAM_TOKEN)
