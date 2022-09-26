@@ -46,15 +46,14 @@ def get_api_answer(current_timestamp):
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     status = requests.get(ENDPOINT, headers=HEADERS, params=params)
-    if status.status_code == requests.codes.ok:
-        return status.json()
-    else:
-        print(status.json())
+    if status.status_code != requests.codes.ok:
+        # return status.json()
         logging.error(f'Сбой в работе программы: '
                       f'Эндпоинт {ENDPOINT} недоступен. '
                       f'Код ответа API: {status.status_code}')
         raise Exception(f'Эндпоинт {ENDPOINT} недоступен. '
                         f'Код ответа API: {status.status_code}')
+    return status.json()
 
 
 def check_response(response):
@@ -106,7 +105,7 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-    if check_tokens() is False:
+    if check_tokens() is False: # из check_tokens() возвращается False, потому что если True то нету одной из переменных
         logging.error('Программа принудительно остановлена.')
         raise Exception('Программа принудительно остановлена.')
     bot = Bot(token=TELEGRAM_TOKEN)
@@ -123,7 +122,6 @@ def main():
             message = f'Сбой в работе программы: {error}'
             send_message(bot, message)
         finally:
-            current_timestamp = int(time.time())
             time.sleep(RETRY_TIME)
 
 
