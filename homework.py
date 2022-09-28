@@ -2,6 +2,7 @@ import os
 import logging
 import requests
 import time
+from typing import Dict
 
 from telegram import Bot
 
@@ -48,8 +49,7 @@ def get_api_answer(current_timestamp):
     status = requests.get(ENDPOINT, headers=HEADERS, params=params)
     if status.status_code != requests.codes.ok:
         # return status.json()
-        logging.error(f'Сбой в работе программы: '
-                      f'Эндпоинт {ENDPOINT} недоступен. '
+        logging.error(f'Эндпоинт {ENDPOINT} недоступен. '
                       f'Код ответа API: {status.status_code}')
         raise Exception(f'Эндпоинт {ENDPOINT} недоступен. '
                         f'Код ответа API: {status.status_code}')
@@ -60,7 +60,7 @@ def check_response(response):
     """Проверка ключей."""
     homeworks = response['homeworks']
     if homeworks is not None:
-        if type(homeworks) == list:
+        if isinstance(homeworks, list):
             return homeworks
         logging.error('отсутствие ожидаемых ключей в ответе API')
         raise Exception('отсутствие ожидаемых ключей в ответе API')
@@ -68,23 +68,19 @@ def check_response(response):
 
 def parse_status(homework):
     """Проверка статуса."""
-    homework_name = homework['homework_name']
-    homework_status = homework['status']
-    if OLD_STATUSES.get('homework_name') == homework.get('status'):
-        logging.debug('Статус не изменен')
-    else:
-        if homework_status in HOMEWORK_STATUSES:
-            OLD_STATUSES[homework_name] = homework_status
-            verdict = HOMEWORK_STATUSES[homework_status]
-            return (f'Изменился статус проверки работы "{homework_name}". '
-                    f'{verdict}')
-        else:
-            logging.error(f'недокументированный статус домашней работы, '
-                          f'обнаруженный в ответе API. '
-                          f'Не нашел {homework_status}')
-            raise Exception(f'недокументированный статус домашней работы, '
-                            f'обнаруженный в ответе API. '
-                            f'Не нашел {homework_status}')
+    if not isinstance(homework, Dict):
+        raise TypeError('Это не словарь!')
+    homework_name = homework.get('homework_name')
+    if homework_name is None:
+        raise KeyError('Имя не существует')
+    homework_status = homework.get('status')
+    if homework_status is None:
+        raise KeyError('Статус не существует')
+    verdict = HOMEWORK_STATUSES[homework_status]
+    if verdict is None:
+        raise KeyError(f'Ошибка статуса {verdict}')
+    logging.info(f'Новый статус работы. {verdict}')
+    return (f'Изменился статус проверки работы "{homework_name}". {verdict}')
 
 
 def check_tokens():
@@ -105,7 +101,7 @@ def check_tokens():
 
 def main():
     """Основная логика работы бота."""
-    if check_tokens():
+    if not check_tokens():
         logging.error('Программа принудительно остановлена.')
         raise Exception('Программа принудительно остановлена.')
     bot = Bot(token=TELEGRAM_TOKEN)
